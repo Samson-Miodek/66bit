@@ -90,9 +90,12 @@
 
         $(':input','.form')
             .not(':button, :submit, :reset, :hidden')
-            .val('')
-            .removeAttr('checked')
-            .removeAttr('selected');
+            .prop('checked', false)
+            .prop('selected', false);
+        $("#name").val('')
+        $("#surname").val('')
+        $("#team").val('')
+        $("#birthday").val('')
     });
 
 

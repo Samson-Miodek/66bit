@@ -69,7 +69,7 @@ public class Footballer {
         return birthday;
     }
 
-    public void setBirthday(String birthday) throws ParseException {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 
