@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Каталог футболистов</title>
+    <link href="/css/bootstrap-grid.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <link href="/css/main.css" rel="stylesheet">
+</head>
+<body>
+<div id="main-content" class="container">
+    <br>
+    <h1>Каталог футболистов</h1>
+    <br>
+    <h4>
+        <a href="/" class="btn btn-info">Главная</a>
+        <a href="/add/footballer" class="btn btn-info">Добавить футболиста</a>
+    </h4>
+    <br>
+    <hr>
+    <div class="container" id="catalog">
+        <div th:each="f : ${footballers}" class="card d-inline-flex mb-5 cardwh">
+            <img src="/img/avatar.png" class="card-img-top" alt="avatar">
+            <div class="card-body">
+                <h5 th:text="${f.getName()+' '+f.getSurname()}" class="card-title">Название
+                    карточки</h5>
+                <p th:text="'Команда: '+${f.getTeam().getName()}" class="card-text"></p>
+                <p th:text="'Дата рождения: '+${f.getBirthday()}" class="card-text"></p>
+                <p  class="card-text">
+                    Страна:
+                    <img class="d-inline-block" th:src="'/icons/'+${f.getCountry()}+'.png'" width="32px" height="32px" alt="">
+                </p>
+                <p th:text="'Пол: '+${f.getGender()}" class="card-text"></p>
+                <a th:href="'/edit/footballer/'+${f.getId()}" class="btn btn-primary">Редактировать</a>
+            </div>
+        </div>
+    </div>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li th:each="p : ${#numbers.sequence(0,pages)}" class="page-item">
+                <a class="page-link" th:text="${p}" th:href="'/?page='+${p}">
+                    1
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <hr>
+    <div class="align-content-center text-center">
+        <h4>
+            <a href="/add/footballer" class="btn btn-info text-center">Добавить футболиста</a>
+        </h4>
+    </div>
+    <br>
+    <br>
+</div>
+
+
+<script>
+
+    const queryString = window.location.search;
+    if (queryString == '' || queryString === "?page=0") {
+        var socket = new SockJS('/websocket');
+        var stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            stompClient.subscribe('/topic/send-footballer', function (footballer) {
+                addFootballer(JSON.parse(footballer.body))
+            });
+        });
+
+        function addFootballer(footballer) {
+            $("#catalog").prepend(
+                '        <div class="card d-inline-flex mb-5 cardwh"  >\n' +
+                '            <img src="/img/avatar.png" class="card-img-top" alt="avatar">\n' +
+                '            <div class="card-body">\n' +
+                '                <h5 class="card-title">' + footballer.name + ' ' + footballer.surname + '</h5>\n' +
+                '                <p class="card-text">Команда: ' + footballer.team.name + '</p>\n' +
+                '                <p class="card-text">Дата рождения: ' + footballer.birthday + '</p>\n' +
+                '                <p class="card-text">Страна: ' + footballer.country + '</p>\n' +
+                '                <p class="card-text">Пол: ' + footballer.gender + '</p>\n' +
+                '                <a href="/edit/footballer/' + footballer.id + '" class="btn btn-primary">Редактирвать</a>\n' +
+                '            </div>\n' +
+                '        </div>'
+            );
+        }
+    }
+</script>
+
+</body>
+</html>

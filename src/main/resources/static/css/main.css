@@ -1,0 +1,9 @@
+.cardwh{
+    width: 33%;
+}
+
+@media (max-width: 768px){
+    .cardwh{
+        width: 100%;
+    }
+}
