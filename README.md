@@ -2,7 +2,6 @@
 
 Проект написан на Spring с Websocket'ами, в качестве БД PostgreSQL
 
-Демонстрация без необходимости локально запускать код: [на сайте denisss.ru](http://denisss.ru)
 
 [Видео демонстрация](https://youtu.be/q5C4SnNwxHI)
 
